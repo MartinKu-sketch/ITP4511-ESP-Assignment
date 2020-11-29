@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @author saver
  */
 public class UserBean implements Serializable{
-    private String userId,name,pw,role;
+     private String userId,name,pw,role;
     
     public String getPw(){
         return pw;
@@ -44,4 +44,6 @@ public class UserBean implements Serializable{
     public void setRole(String role){
         this.role = role;
     }
+    
+   
 }
