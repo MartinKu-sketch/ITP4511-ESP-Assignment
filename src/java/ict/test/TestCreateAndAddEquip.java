@@ -21,6 +21,13 @@ public class TestCreateAndAddEquip {
          db.addRecord("Wireless Mouse","available","good",30,"true");
          db.addRecord("Keyboard","available","good",40,"true");
          db.addRecord("Notebook","available","good",2,"true");
+         db.addRecord("Mac Book Pro","unavailable","good",0,"true");
+         
+         db.addRecord("ipad","available","good",14,"true");
+         db.addRecord("CD","available","good",2,"true");
+         db.addRecord("DVD","available","good",5,"true");
+         db.addRecord("USB","available","good",7,"true");
+         db.addRecord("Ryzen 3600x","unavailable","good",0,"true");
 //         db.addRecord("Mac Book Pro","unavailable","good",3,"true");
     }
     

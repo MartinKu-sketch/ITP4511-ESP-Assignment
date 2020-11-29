@@ -15,7 +15,7 @@ public class TestDropTable {
     public static void main(String[] args){
         String url = "jdbc:mysql://localhost:3306/itp4511_db";
         String username = "root";
-        String password = "";
+        String password = "root";
         UserDB custDb = new UserDB(url, username, password);
         custDb.dropCustTable();
     }
