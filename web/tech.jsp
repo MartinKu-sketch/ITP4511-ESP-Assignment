@@ -22,12 +22,12 @@
     <body>​
         <div id="maincontainer">​
             <div id="leftcolumn">​
-                <jsp:include page="menu.jsp" />​
+                <jsp:include page="techMenu.jsp" />​
             </div>​
             <div id="contentwrapper">​
                 <div id="contentcolumn">​
                     <div class="innertube">
-                        <jsp:include page="login.jsp" />​
+                        <h1>Welcome! Tech</h1>
                     </div>
                 </div>​
             </div>​

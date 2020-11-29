@@ -5,6 +5,8 @@
 }
 
 body{
+    overflow: hidden;
+    height: 110vh;
     margin-top: -38px;
     padding:0;
 }
@@ -15,34 +17,22 @@ em{color: red;}
 #maincontainer{
     padding:0;
     margin: 0 auto; /*Center container on page*/
-}
-
-#topsection{
-    background: #EAEAEA;
-    width: 200px;
-    height: 80px; /*Height of top section*/
-    text-align: center;
-}
-
-#topsection img {
-    margin-top:10px;
-}
-
-#topsection h1{
-    margin: 0;
+    display: flex;
+    flex-direction: row;
+    height: 100%;
 }
 
 #contentwrapper{
     width: 100%;
+    height: 100%;
 }
 
 #contentcolumn{
-    margin-left: 200px; /*Set left margin to LeftColumnWidth*/
+
 }
 
 #leftcolumn{
-    float:left;
-    width: 200px; /*Width of left column*/
+    width: 250px; /*Width of left column*/
     height: 100%;
     background: #000033;
 }
@@ -66,8 +56,30 @@ a{
 #navbar li:hover {
     cursor: pointer;
     background: #cccccc;
+    opacity: 0.7;
 }
 
 #navbar li:hover {
     color:#000033;
+}
+
+input[type=submit]{
+    padding:5px 10px;
+    cursor: pointer;
+    font-size: 11pt;
+    background-color: gainsboro;
+}
+
+input[type=submit]:hover{
+    padding:5px 10px;
+    font-size: 11pt;
+    background-color: cadetblue;
+}
+
+input[type=text]{
+    font-size: 12pt;
+}
+
+input[type=password]{
+    font-size: 12pt;
 }

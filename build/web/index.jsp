@@ -9,14 +9,11 @@
         <style type="text/css">
             fieldset {
                 padding: 1em;
-                font:80%/1 sans-serif;
             }
 
             label {
-                float:left;
                 width:20%;
                 margin-right:0.5em;
-                padding-top:0.2em;
                 text-align: right;
                 font-weight: bold;
             }
@@ -24,9 +21,6 @@
     </head>​
     <body>​
         <div id="maincontainer">​
-            <div id="topsection">
-                <jsp:include page="heading.jsp" />​
-            </div>​
             <div id="leftcolumn">​
                 <jsp:include page="menu.jsp" />​
             </div>​

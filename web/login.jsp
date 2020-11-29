@@ -1,13 +1,16 @@
-<form>
+<h1 style="margin: 150px 0px 50px 0;">Login</h1>
+<form method="post" action="main">
+    <input type="hidden" name="action" value="authenticate"/>
     <fieldset>
-        <legend>User Profile</legend>
-        <label for="name">Username:</label>
-        <input type="text" name="name" id="name"/>
+        <legend>User Login</legend>
+        <label for="id">ID:</label>
+        <input type="text" name="id" id="id"/>
         <br />
-        <label for="mail">E-mail</label>
-        <input type="text" name="mail" id="mail"/>
         <br />
-        <label for="address">Address:</label>
-        <input type="text" name="address" id="address" size="40"/>
+        <label for="pw">Password:</label>
+        <input type="password" name="pw" id="pw"/>
+        <br />
+        <br />
+        <input type="submit" value="Login"/>
     </fieldset>
 </form>
