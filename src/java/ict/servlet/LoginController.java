@@ -61,19 +61,19 @@ public class LoginController extends HttpServlet {
         String role = db.isValidUser(userId, password);
         String targetURL;
 
-        if (role.equals("student")){
+        if (role.equals("Student")){
             HttpSession session = request.getSession(true);
             UserBean bean = new UserBean();
             bean.setName(userId);
             session.setAttribute("userId", bean);
             targetURL = "student.jsp";
-        } else if(role.equals("tech")){
+        } else if(role.equals("Technician")){
             HttpSession session = request.getSession(true);
             UserBean bean = new UserBean();
             bean.setName(userId);
             session.setAttribute("userId", bean);
             targetURL = "tech.jsp";
-        } else if(role.equals("stech")){
+        } else if(role.equals("Senior Technician")){
             HttpSession session = request.getSession(true);
             UserBean bean = new UserBean();
             bean.setName(userId);

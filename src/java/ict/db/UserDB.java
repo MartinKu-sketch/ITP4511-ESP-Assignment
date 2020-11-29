@@ -217,7 +217,7 @@ public class UserDB {
         return arraylist;
     }
     
-    public boolean delRecord(String custId){
+    public boolean delRecord(String userId){
         Connection cnnct = null;
         PreparedStatement pStmnt = null;
         boolean isSuccess = false;
@@ -226,11 +226,11 @@ public class UserDB {
             cnnct = getConnection();
             String  preQueryStatement = "DELETE FROM users WHERE userId =?;";
             pStmnt = cnnct.prepareStatement(preQueryStatement);
-            pStmnt.setString(1,custId);
+            pStmnt.setString(1,userId);
             int rowCount = pStmnt.executeUpdate();
             if(rowCount >=1){
                 isSuccess = true;
-                System.out.println(custId+ " is deleted");
+                System.out.println(userId+ " is deleted");
             }
             pStmnt.close();
             cnnct.close();
@@ -245,23 +245,23 @@ public class UserDB {
         return isSuccess;
     }
     
-    public boolean editRecord(UserBean cb){
+    public boolean editRecord(UserBean ub){
         Connection cnnct = null;
         PreparedStatement pStmnt = null;
         boolean isSuccess = false;
 
         try{
             cnnct = getConnection();
-            String  preQueryStatement = "update users set name=?, pw=?,role=? where userId=?";
+            String  preQueryStatement = "update users set name=?, password=?, role=? where userId=?";
             pStmnt = cnnct.prepareStatement(preQueryStatement);
-            pStmnt.setString(1,cb.getName());
-            pStmnt.setString(2,cb.getPw());
-            pStmnt.setString(3,cb.getRole());
-            pStmnt.setString(4,cb.getUserId());
+            pStmnt.setString(1,ub.getName());
+            pStmnt.setString(2,ub.getPw());
+            pStmnt.setString(3,ub.getRole());
+            pStmnt.setString(4,ub.getUserId());
             int rowCount = pStmnt.executeUpdate();
             if(rowCount >=1){
                 isSuccess = true;
-                System.out.println(cb.getUserId()+ " is updated");
+                System.out.println(ub.getUserId()+ " is updated");
             }
             pStmnt.close();
             cnnct.close();

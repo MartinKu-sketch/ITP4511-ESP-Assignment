@@ -14,7 +14,7 @@ public class TestQueryCustById {
     public static void main(String[] args){
         String url = "jdbc:mysql://localhost:3306/itp4511_db?useSSL=false";
         String username = "root";
-        String password = "root";
+        String password = "";
         UserDB db = new UserDB(url, username, password);
         UserBean cb = db.queryUserByID("1");
         System.out.println("ID: "+cb.getUserId());

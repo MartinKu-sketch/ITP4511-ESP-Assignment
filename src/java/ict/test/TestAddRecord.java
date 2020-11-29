@@ -15,8 +15,8 @@ public class TestAddRecord {
         String username = "root";
         String password = "root";
         UserDB custDb = new UserDB(url, username, password);
-        custDb.addRecord("1","Peter","12345678","student");
-        custDb.addRecord("2","Nancy","12345678","tech");
-        custDb.addRecord("3","Larry","12345678","stech");
+        custDb.addRecord("4","Test1","123","Student");
+        custDb.addRecord("5","Test2","123","Technician");
+        custDb.addRecord("6","Test3","123","Senior Technician");
     }
 }
