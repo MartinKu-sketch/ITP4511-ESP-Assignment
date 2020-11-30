@@ -60,7 +60,7 @@ public class InventoryTag extends SimpleTagSupport {
                         + "<td>" + ub.getEquipment_name() + "</td>"
                         + "<td>" + ub.getStatus() + "</td>"
                         + "<td>" + ub.getStock() + "</td>"
-                        + "<td><a href=\"acMgmController?action=delete&id=" + ub.getEquipment_id() + "\">Delete</a>"
+                        + "<td><button id=" +ub.getEquipment_id()+ " onclick=\"isSubmit(event)\">Delete</button>"
                         + "<a href=\"acMgmController?action=edit&id=" + ub.getEquipment_id() + "\">Edit</a></td>"
                         + "</tr>");
             }

@@ -25,6 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 public class InventoryController extends HttpServlet {
 
     private EquipmentDB db;
+    private final String DEFAULT_LIMIT = "5";
+    
 
     @Override
     public void init() {
@@ -46,6 +48,36 @@ public class InventoryController extends HttpServlet {
             request.setAttribute("limit", limit);
             RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/inventory.jsp");
             rd.forward(request, response);
+        } else if ("Delete".equalsIgnoreCase(action)) {
+            String id = request.getParameter("id");
+            if (id != null) {
+                db.delRecord( Integer.parseInt(id) );
+               response.sendRedirect("InventoryController?action=list&limit=5");
+                
+                
+            }
+        } else if ("Edit".equalsIgnoreCase(action)) {
+//            String id = request.getParameter("id");
+//            String name = request.getParameter("name");
+//            String pw = request.getParameter("pw");
+//            String role = request.getParameter("role");
+//            UserBean ub = new UserBean();
+//            ub.setUserId(id);
+//            ub.setName(name);
+//            ub.setPw(pw);
+//            ub.setRole(role);
+//            db.editRecord(ub);
+//            response.sendRedirect("acMgmController?action=list");
+        } else if ("add".equalsIgnoreCase(action)) {
+//            String id = request.getParameter("id");
+//            String name = request.getParameter("name");
+//            String pw = request.getParameter("pw");
+//            String role = request.getParameter("role");
+//            db.addRecord(id, name, pw, role);
+//            response.sendRedirect("acMgmController?action=list");
+        } else {
+            PrintWriter out = response.getWriter();
+            out.println("NO such action :" + action);
         }
     }
 

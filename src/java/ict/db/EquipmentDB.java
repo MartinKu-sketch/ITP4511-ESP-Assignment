@@ -127,6 +127,39 @@ public class EquipmentDB {
         return arraylist;
     }
     
+    public EquipmentBean queryEquipByID(String id){
+        Connection cnnct = null;
+        PreparedStatement pStmnt = null;
+        EquipmentBean cb = null;
+        try{
+            cnnct = getConnection();
+            String  preQueryStatement = "Select * from equipments where equipment_id =?";
+            pStmnt = cnnct.prepareStatement(preQueryStatement);
+            pStmnt.setString(1,id);
+            ResultSet rs = null;
+            rs = pStmnt.executeQuery();
+            if(rs.next()){
+               cb = new EquipmentBean();
+                cb.setEquipment_id(rs.getInt(1));
+                cb.setEquipment_name(rs.getString(2));
+                cb.setStatus(rs.getString(3));
+                cb.setDescription(rs.getString(4));
+                cb.setStock(rs.getInt(5));
+                cb.setVisibility(rs.getString(6));
+            }
+            pStmnt.close();
+            cnnct.close();
+        }catch(SQLException ex){
+            while(ex !=null){
+                ex.printStackTrace();
+                ex = ex.getNextException();
+            }
+        }catch(IOException ex){
+            ex.printStackTrace();
+        }
+        return cb;
+    }
+    
     public boolean delRecord(int equipment_id){
         Connection cnnct = null;
         PreparedStatement pStmnt = null;
