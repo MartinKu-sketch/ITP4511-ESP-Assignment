@@ -3,4 +3,5 @@
     <a href="main"><li>Home</li></a>
     <a href="profile.jsp"><li>Analytic&Report</li></a>
     <a href="acMgmController?action=list"><li>Account Management</li></a>
+    <a href="index.jsp"><li>Logout</li></a>
 </ul>
