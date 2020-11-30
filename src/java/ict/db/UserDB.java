@@ -110,7 +110,6 @@ public class UserDB {
             cnnct.close();
         }catch(SQLException ex){
             while(ex !=null){
-                ex.printStackTrace();
                 ex = ex.getNextException();
             }
         }catch(IOException ex){
@@ -119,7 +118,39 @@ public class UserDB {
         return cb;
     }
     
-    public ArrayList<UserBean> queryCustByName(String name){
+    public ArrayList<UserBean> queryUserByIDs(String id){
+        Connection cnnct = null;
+        PreparedStatement pStmnt = null;
+        UserBean cb = null;
+        ArrayList<UserBean> arraylist= new ArrayList<>();
+        try{
+            cnnct = getConnection();
+            String  preQueryStatement = "Select * from users where userId=?";
+            pStmnt = cnnct.prepareStatement(preQueryStatement);
+            pStmnt.setString(1,id);
+            ResultSet rs = null;
+            rs = pStmnt.executeQuery();
+            if(rs.next()){
+                cb = new UserBean();
+                cb.setUserId(rs.getString(1));
+                cb.setName(rs.getString(2));
+                cb.setPw(rs.getString(3));
+                cb.setRole(rs.getString(4));
+                arraylist.add(cb);
+            }
+            pStmnt.close();
+            cnnct.close();
+        }catch(SQLException ex){
+            while(ex !=null){
+                ex = ex.getNextException();
+            }
+        }catch(IOException ex){
+            ex.printStackTrace();
+        }
+        return arraylist;
+    }
+    
+    public ArrayList<UserBean> queryUserByName(String name){
         Connection cnnct = null;
         PreparedStatement pStmnt = null;
         UserBean cb = null;

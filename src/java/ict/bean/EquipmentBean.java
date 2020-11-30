@@ -12,9 +12,13 @@ import java.io.Serializable;
  * @author user
  */
 public class EquipmentBean implements Serializable {
-   private String equipment_name,status,description,visibility;
+
+    private String equipment_name, status, description, visibility;
     private int equipment_id, stock;
 
+    
+    public EquipmentBean() {}
+    
     public String getEquipment_name() {
         return equipment_name;
     }

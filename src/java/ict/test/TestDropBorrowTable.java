@@ -5,18 +5,18 @@
  */
 package ict.test;
 
-import ict.db.EquipmentDB;
+import ict.db.BorrowDB;
 
 /**
  *
  * @author user
  */
-public class TestDropEquip {
+public class TestDropBorrowTable {
     public static void main(String[] args){
        String url = "jdbc:mysql://localhost:3306/itp4511_db";
         String username = "root";
         String password = "root";
-        EquipmentDB db = new EquipmentDB(url, username, password);
-        db.dropEquipTable();
+        BorrowDB db = new BorrowDB(url, username, password);
+        db.dropBorrowTable();
     } 
 }

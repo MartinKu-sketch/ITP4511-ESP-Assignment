@@ -15,7 +15,7 @@ public class TestDelete {
     public static void main(String[] args){
         String url = "jdbc:mysql://localhost:3306/itp4511_db";
         String username = "root";
-        String password = "root";
+        String password = "";
         UserDB custDb = new UserDB(url, username, password);
         custDb.delRecord("1");
         custDb.delRecord("2");

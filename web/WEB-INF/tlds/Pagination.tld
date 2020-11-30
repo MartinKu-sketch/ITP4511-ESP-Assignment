@@ -2,10 +2,10 @@
 <taglib version="2.1" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd">
   <tlib-version>1.0</tlib-version>
   <short-name>ipage</short-name>
-  <uri>/WEB-INF/tlds/inventoryPagination</uri>
+  <uri>/WEB-INF/tlds/pagination</uri>
   <tag>
         <name>page</name>
-        <tag-class>ict.tag.InventoryPagination</tag-class>
+        <tag-class>ict.tag.Pagination</tag-class>
         <body-content>empty</body-content>
         <attribute>
             <name>fullsize</name>
@@ -15,6 +15,11 @@
         </attribute>
         <attribute>
             <name>limit</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>page</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

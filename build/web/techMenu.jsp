@@ -2,7 +2,8 @@
 <ul id="navbar">
     <a href="tech.jsp"><li>Home</li></a>
     <a href="InventoryController?action=list&limit=5"><li>Inventory Management</li></a>
-    <a href="template.jsp"><li>Handle Check-in</li></a>
-    <a href="template.jsp"><li>Handle Check-out</li></a>
+    <a href="BorrowController?action=viewRequest&limit=10"><li>Process Request</li></a>
+    <a href="CheckInOutController?action=viewCheckIn&limit=10"><li>Check-in/Out</li></a>
     <a href="template.jsp"><li>Lookup overdue Item</li></a>
+    <a href="index.jsp"><li>Logout</li></a>
 </ul>

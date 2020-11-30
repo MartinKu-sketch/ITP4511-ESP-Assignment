@@ -64,19 +64,19 @@ public class LoginController extends HttpServlet {
         if (role.equals("Student")){
             HttpSession session = request.getSession(true);
             UserBean bean = new UserBean();
-            bean.setName(userId);
+            bean.setUserId(userId);
             session.setAttribute("userId", bean);
             targetURL = "student.jsp";
         } else if(role.equals("Technician")){
             HttpSession session = request.getSession(true);
             UserBean bean = new UserBean();
-            bean.setName(userId);
+            bean.setUserId(userId);
             session.setAttribute("userId", bean);
             targetURL = "tech.jsp";
         } else if(role.equals("Senior Technician")){
             HttpSession session = request.getSession(true);
             UserBean bean = new UserBean();
-            bean.setName(userId);
+            bean.setUserId(userId);
             session.setAttribute("userId", bean);
             targetURL = "stech.jsp";
         } else {

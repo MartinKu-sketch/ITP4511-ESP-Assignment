@@ -5,6 +5,7 @@
  */
 package ict.db;
 
+import ict.bean.BorrowBean;
 import ict.bean.EquipmentBean;
 import java.io.*;
 import java.sql.*;
@@ -14,11 +15,11 @@ import java.util.ArrayList;
  *
  * @author user
  */
-public class EquipmentDB {
+public class BorrowDB {
 
     private String url = "", username = "", password = "";
 
-    public EquipmentDB(String url, String username, String password) {
+    public BorrowDB(String url, String username, String password) {
         this.url = url;
         this.username = username;
         this.password = password;
@@ -40,18 +41,17 @@ public class EquipmentDB {
             cnnct = getConnection();
             stmnt = cnnct.createStatement();
             String sql
-                    = "Create table if not exists equipment ("
-                    + "equipment_id int(8) NOT NULL AUTO_INCREMENT,"
-                    + "equipment_name varchar(40) NOT NULL,"
+                    = "Create table if not exists borrowlist ("
+                    + "borrow_id int(10) NOT NULL AUTO_INCREMENT,"
+                    + "equipment_id int(8) NOT NULL,"
+                    + "userId varchar(10) NOT NULL,"
+                    + "quantity int(3) NOT NULL,"
                     + "status varchar(20) NOT NULL,"
-                    + "description varchar(100) DEFAULT NULL,"
-                    + "stock int(8) NOT NULL,"
-                    + "visibility varchar(10) NOT NULL,"
-                    + "primary key (equipment_id))";
+                    + "primary key (borrow_id))";
             stmnt.execute(sql);
             stmnt.close();
             cnnct.close();
-            System.out.println("equipment is added");
+            System.out.println("borrowlist is added");
         } catch (SQLException ex) {
             while (ex != null) {
                 ex.printStackTrace();
@@ -62,24 +62,22 @@ public class EquipmentDB {
         }
     }
 
-    public boolean addRecord(String equipment_name, String status, String description, int stock, String visibility) {
+    public boolean addRecord(int equipment_id, String userId, int quantity, String status) {
         Connection cnnct = null;
         PreparedStatement pStmnt = null;
         boolean isSuccess = false;
         try {
             cnnct = getConnection();
-            String preQueryStatement = "Insert into equipment(equipment_name,status,description,stock,visibility) values (?,?,?,?,?)";
+            String preQueryStatement = "Insert into borrowlist(equipment_id,userId,quantity,status) values (?,?,?,?)";
             pStmnt = cnnct.prepareStatement(preQueryStatement);
-//            pStmnt.setInt(1,equipment_id);
-            pStmnt.setString(1, equipment_name);
-            pStmnt.setString(2, status);
-            pStmnt.setString(3, description);
-            pStmnt.setInt(4, stock);
-            pStmnt.setString(5, visibility);
+            pStmnt.setInt(1, equipment_id);
+            pStmnt.setString(2, userId);
+            pStmnt.setInt(3, quantity);
+            pStmnt.setString(4, status);
             int rowCount = pStmnt.executeUpdate();
             if (rowCount >= 1) {
                 isSuccess = true;
-                System.out.println(equipment_name + " is added");
+                System.out.println(equipment_id + ": " + quantity + " is added");
             }
             pStmnt.close();
             cnnct.close();
@@ -94,26 +92,25 @@ public class EquipmentDB {
         return isSuccess;
     }
 
-    public ArrayList<EquipmentBean> queryEquip() {
+    public ArrayList<BorrowBean> queryBorrow() {
         Connection cnnct = null;
         PreparedStatement pStmnt = null;
-        EquipmentBean cb = null;
-        ArrayList<EquipmentBean> arraylist = new ArrayList<>();
+        BorrowBean bb = null;
+        ArrayList<BorrowBean> arraylist = new ArrayList<BorrowBean>();
         try {
             cnnct = getConnection();
-            String preQueryStatement = "Select * from equipment";
+            String preQueryStatement = "Select * from borrowlist";
             pStmnt = cnnct.prepareStatement(preQueryStatement);
             ResultSet rs = null;
             rs = pStmnt.executeQuery();
             while (rs.next()) {
-                cb = new EquipmentBean();
-                cb.setEquipment_id(rs.getInt(1));
-                cb.setEquipment_name(rs.getString(2));
-                cb.setStatus(rs.getString(3));
-                cb.setDescription(rs.getString(4));
-                cb.setStock(rs.getInt(5));
-                cb.setVisibility(rs.getString(6));
-                arraylist.add(cb);
+                bb = new BorrowBean();
+                bb.setBorrow_id(rs.getInt(1));
+                bb.setEquipment_id(rs.getInt(2));
+                bb.setUserId(rs.getString(3));
+                bb.setQuantity(rs.getInt(4));
+                bb.setStatus(rs.getString(5));
+                arraylist.add(bb);
             }
             pStmnt.close();
             cnnct.close();
@@ -128,54 +125,24 @@ public class EquipmentDB {
         return arraylist;
     }
     
-    public ArrayList<EquipmentBean> queryEquipByVisibility() {
+    public BorrowBean queryBorrowByID(int id) {
         Connection cnnct = null;
         PreparedStatement pStmnt = null;
-        EquipmentBean cb = null;
-        ArrayList<EquipmentBean> arraylist = new ArrayList<>();
+        BorrowBean bb = null;
         try {
             cnnct = getConnection();
-            String preQueryStatement = "Select * from equipment where visibility = ?";
-            pStmnt = cnnct.prepareStatement(preQueryStatement);
-            pStmnt.setString(1, "true");
-            ResultSet rs = null;
-            rs = pStmnt.executeQuery();
-            while (rs.next()) {
-                cb = new EquipmentBean();
-                cb.setEquipment_id(rs.getInt(1));
-                cb.setEquipment_name(rs.getString(2));
-                cb.setStatus(rs.getString(3));
-                cb.setDescription(rs.getString(4));
-                cb.setStock(rs.getInt(5));
-                cb.setVisibility(rs.getString(6));
-                arraylist.add(cb);
-            }
-            pStmnt.close();
-            cnnct.close();
-        } catch (SQLException ex) {
-            while (ex != null) {
-                ex.printStackTrace();
-                ex = ex.getNextException();
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        return arraylist;
-    }
-    
-    public int queryQtyByID(int id) {
-        Connection cnnct = null;
-        PreparedStatement pStmnt = null;
-        int qty = 0;
-        try {
-            cnnct = getConnection();
-            String preQueryStatement = "Select stock from equipment where equipment_id = ?";
+            String preQueryStatement = "Select * from borrowlist where borrow_id = ?";
             pStmnt = cnnct.prepareStatement(preQueryStatement);
             pStmnt.setInt(1, id);
             ResultSet rs = null;
             rs = pStmnt.executeQuery();
             while (rs.next()) {
-                qty = rs.getInt(1);
+                bb = new BorrowBean();
+                bb.setBorrow_id(rs.getInt(1));
+                bb.setEquipment_id(rs.getInt(2));
+                bb.setUserId(rs.getString(3));
+                bb.setQuantity(rs.getInt(4));
+                bb.setStatus(rs.getString(5));
             }
             pStmnt.close();
             cnnct.close();
@@ -187,28 +154,29 @@ public class EquipmentDB {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        return qty;
+        return bb;
     }
-
-    public EquipmentBean queryEquipByID(int id) {
+    public ArrayList<BorrowBean> queryBorrowByEquipID(int id) {
         Connection cnnct = null;
         PreparedStatement pStmnt = null;
-        EquipmentBean cb = null;
+        BorrowBean bb = null;
+        ArrayList<BorrowBean> arraylist = new ArrayList<BorrowBean>();
         try {
             cnnct = getConnection();
-            String preQueryStatement = "Select * from equipment where equipment_id =?";
+            String preQueryStatement = "Select * from borrowlist where equipment_id = ? AND status = ?";
             pStmnt = cnnct.prepareStatement(preQueryStatement);
-            pStmnt.setInt(1,id);
+            pStmnt.setInt(1, id);
+            pStmnt.setString(2, "Pending");
             ResultSet rs = null;
             rs = pStmnt.executeQuery();
-            if (rs.next()) {
-                cb = new EquipmentBean();
-                cb.setEquipment_id(rs.getInt(1));
-                cb.setEquipment_name(rs.getString(2));
-                cb.setStatus(rs.getString(3));
-                cb.setDescription(rs.getString(4));
-                cb.setStock(rs.getInt(5));
-                cb.setVisibility(rs.getString(6));
+            while (rs.next()) {
+                bb = new BorrowBean();
+                bb.setBorrow_id(rs.getInt(1));
+                bb.setEquipment_id(rs.getInt(2));
+                bb.setUserId(rs.getString(3));
+                bb.setQuantity(rs.getInt(4));
+                bb.setStatus(rs.getString(5));
+                arraylist.add(bb);
             }
             pStmnt.close();
             cnnct.close();
@@ -220,23 +188,63 @@ public class EquipmentDB {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        return cb;
+        return arraylist;
+    }
+    public ArrayList<BorrowBean> queryBorrowByStudentID(int id) {
+        Connection cnnct = null;
+        PreparedStatement pStmnt = null;
+        BorrowBean bb = null;
+        ArrayList<BorrowBean> arraylist = new ArrayList<BorrowBean>();
+        try {
+            cnnct = getConnection();
+            String preQueryStatement = "Select * from borrowlist where userId = ? AND status = ?";
+            pStmnt = cnnct.prepareStatement(preQueryStatement);
+            pStmnt.setInt(1, id);
+            pStmnt.setString(2, "Pending");
+            ResultSet rs = null;
+            rs = pStmnt.executeQuery();
+            while (rs.next()) {
+                bb = new BorrowBean();
+                bb.setBorrow_id(rs.getInt(1));
+                bb.setEquipment_id(rs.getInt(2));
+                bb.setUserId(rs.getString(3));
+                bb.setQuantity(rs.getInt(4));
+                bb.setStatus(rs.getString(5));
+                arraylist.add(bb);
+            }
+            pStmnt.close();
+            cnnct.close();
+        } catch (SQLException ex) {
+            while (ex != null) {
+                ex.printStackTrace();
+                ex = ex.getNextException();
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return arraylist;
     }
     
-    public String queryEquipNameByID(int id) {
+    public ArrayList<BorrowBean> queryBorrowByStatus(String status) {
         Connection cnnct = null;
         PreparedStatement pStmnt = null;
-        EquipmentBean cb = null;
-        String name ="";
+        BorrowBean bb = null;
+        ArrayList<BorrowBean> arraylist = new ArrayList<>();
         try {
             cnnct = getConnection();
-            String preQueryStatement = "Select equipment_name from equipment where equipment_id =?";
+            String preQueryStatement = "Select * from borrowlist where status = ?";
             pStmnt = cnnct.prepareStatement(preQueryStatement);
-            pStmnt.setInt(1,id);
+            pStmnt.setString(1, status);
             ResultSet rs = null;
             rs = pStmnt.executeQuery();
-            if (rs.next()) {
-              name = rs.getString(1);
+            while (rs.next()) {
+                bb = new BorrowBean();
+                bb.setBorrow_id(rs.getInt(1));
+                bb.setEquipment_id(rs.getInt(2));
+                bb.setUserId(rs.getString(3));
+                bb.setQuantity(rs.getInt(4));
+                bb.setStatus(rs.getString(5));
+                arraylist.add(bb);
             }
             pStmnt.close();
             cnnct.close();
@@ -248,23 +256,23 @@ public class EquipmentDB {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        return name;
+        return arraylist;
     }
 
-    public boolean delRecord(int equipment_id) {
+    public boolean delRecord(int borrow_id) {
         Connection cnnct = null;
         PreparedStatement pStmnt = null;
         boolean isSuccess = false;
 
         try {
             cnnct = getConnection();
-            String preQueryStatement = "DELETE FROM equipment WHERE equipment_id =?;";
+            String preQueryStatement = "DELETE FROM borrowlist WHERE borrow_id =?;";
             pStmnt = cnnct.prepareStatement(preQueryStatement);
-            pStmnt.setInt(1, equipment_id);
+            pStmnt.setInt(1, borrow_id);
             int rowCount = pStmnt.executeUpdate();
             if (rowCount >= 1) {
                 isSuccess = true;
-                System.out.println(equipment_id + " is deleted");
+                System.out.println(borrow_id + " is deleted");
             }
             pStmnt.close();
             cnnct.close();
@@ -279,25 +287,24 @@ public class EquipmentDB {
         return isSuccess;
     }
 
-    public boolean editRecord(EquipmentBean eb) {
+    public boolean editRecord(BorrowBean eb) {
         Connection cnnct = null;
         PreparedStatement pStmnt = null;
         boolean isSuccess = false;
 
         try {
             cnnct = getConnection();
-            String preQueryStatement = "update equipment set equipment_name=?, status=?, description=?,visibility=?,stock=? where equipment_id=?";
+            String preQueryStatement = "update borrowlist set equipment_id=?, userId=?, quantity=?,status=? where borrow_id=?";
             pStmnt = cnnct.prepareStatement(preQueryStatement);
-            pStmnt.setString(1, eb.getEquipment_name());
-            pStmnt.setString(2, eb.getStatus());
-            pStmnt.setString(3, eb.getDescription());
-            pStmnt.setString(4, eb.getVisibility());
-            pStmnt.setInt(5, eb.getStock());
-            pStmnt.setInt(6, eb.getEquipment_id());
+            pStmnt.setInt(1, eb.getEquipment_id());
+            pStmnt.setString(2, eb.getUserId());
+            pStmnt.setInt(3, eb.getQuantity());
+            pStmnt.setString(4, eb.getStatus());
+            pStmnt.setInt(5, eb.getBorrow_id());
             int rowCount = pStmnt.executeUpdate();
             if (rowCount >= 1) {
                 isSuccess = true;
-                System.out.println(eb.getEquipment_id() + " is updated");
+                System.out.println(eb.getBorrow_id() + " is updated");
             }
             pStmnt.close();
             cnnct.close();
@@ -312,13 +319,13 @@ public class EquipmentDB {
         return isSuccess;
     }
 
-    public void dropEquipTable() {
+    public void dropBorrowTable() {
         Connection cnnct = null;
-        PreparedStatement pStmnt = null;
+        PreparedStatement pStmnt = null ;
 
         try {
             cnnct = getConnection();
-            String preQueryStatement = "drop table equipment";
+            String preQueryStatement = "drop table borrowlist";
             pStmnt = cnnct.prepareStatement(preQueryStatement);
             pStmnt.executeUpdate();
             System.out.println("table is dropped");
@@ -333,5 +340,4 @@ public class EquipmentDB {
             ex.printStackTrace();
         }
     }
-
 }

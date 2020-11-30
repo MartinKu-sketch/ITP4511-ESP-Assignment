@@ -4,19 +4,18 @@
  * and open the template in the editor.
  */
 package ict.test;
-
-import ict.db.EquipmentDB;
+import ict.db.BorrowDB;
 
 /**
  *
- * @author user
+ * @author a1
  */
-public class TestDropEquip {
+public class TestCreateBorrowTable {
     public static void main(String[] args){
-       String url = "jdbc:mysql://localhost:3306/itp4511_db";
+        String url = "jdbc:mysql://localhost:3306/itp4511_db?useSSL=false";
         String username = "root";
         String password = "root";
-        EquipmentDB db = new EquipmentDB(url, username, password);
-        db.dropEquipTable();
-    } 
+        BorrowDB db = new BorrowDB(url, username, password);
+        db.createTable();
+    }
 }
