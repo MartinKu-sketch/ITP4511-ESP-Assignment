@@ -17,7 +17,7 @@ public class TestQueryCustByName {
         String username = "root";
         String password = "";
         UserDB custDb = new UserDB(url, username, password);
-        ArrayList<UserBean> arraylist = custDb.queryCustByName("Peter");
+        ArrayList<UserBean> arraylist = custDb.queryUserByName("Peter");
         for(UserBean cb : arraylist){
             System.out.println("ID: "+cb.getUserId());
             System.out.println("Name: "+cb.getName());

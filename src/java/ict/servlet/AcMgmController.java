@@ -79,7 +79,20 @@ public class AcMgmController extends HttpServlet {
             ub.setRole(role);
             db.editRecord(ub);
             response.sendRedirect("acMgmController?action=list");
-        } else {
+        } else if ("search".equalsIgnoreCase(action)) {
+            ArrayList users = null;
+            String searchtype = request.getParameter("searchtype");
+            String searchword = request.getParameter("searchword");
+            if(searchtype.equals("id")){
+                users = db.queryUserByIDs(searchword);
+            } else if (searchtype.equals("name")){
+                users = db.queryUserByName(searchword);
+            }
+            request.setAttribute("users", users);
+            RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/accountManagement.jsp");
+            rd.forward(request, response);
+            response.sendRedirect("acMgmController?action=list");
+        }else {
             PrintWriter out = response.getWriter();
             out.println("NO such action :" + action);
         }

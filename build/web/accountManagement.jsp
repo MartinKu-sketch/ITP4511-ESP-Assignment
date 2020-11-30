@@ -51,7 +51,6 @@
                 font-size: 11pt;
                 background-color: cadetblue;
             }
-
         </style>
     </head>​
     <body>​
@@ -64,6 +63,15 @@
                 <div id="contentcolumn">​
                     <div class="innertube">
                         <h1>List of User</h1>
+                        <br>
+                        <form action="acMgmController" method="post">
+                            <input type="hidden" name="action"  value="search" />
+                            <span style="width:120px !important;">Search User By</span>
+                            <input type="radio" name="searchtype" value="id" class="searchtyperadio" required checked>ID</input>
+                            <input type="radio" name="searchtype" value="name" class="searchtyperadio" required>Name</input>
+                            <input type="text" name="searchword"/>
+                            <span><input type="submit" value="Search"/></span>
+                        </form>
                         <br />
                         <div id="usertable-container">
                             <table id="usertable">
