@@ -1,22 +1,18 @@
-<%-- 
-    Document   : brwRequest
-    Created on : 2020年12月2日, 上午05:36:04
-    Author     : user
---%>
+<%@page import="java.util.ArrayList"%>
 <%@page import="ict.bean.BorrowBean"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib uri="/WEB-INF/tlds/showRequestAndCheck" prefix="proc" %>
 <%@taglib uri="/WEB-INF/tlds/pagination" prefix="ipage" %>
-<!DOCTYPE html>
+<!DOCTYPE html>​
 <html>
-    <head>
+    <head> ​
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Process Borrow Requests</title>
         <link rel="stylesheet" href="css/mystyles.css" type="text/css"/>
         <link rel="preconnect" href="https://fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"> 
         <style type="text/css">
-            /*table*/
+           /*table*/
             #usertable-container {
                 /*height: 300px;*/
                 margin-bottom: 20px;
@@ -53,7 +49,7 @@
             }
             .btn_pos{
                 display:flex;
-                /*width:100%;*/
+                width:100%;
                 justify-content: space-around;
                 margin:5px;
                 margin-bottom: 20px;
@@ -118,10 +114,9 @@
                 text-decoration: none;
                 color: red;
             }
-
         </style>
-    </head>
-    <body>
+    </head>​
+    <body>​
         <jsp:useBean id="records" scope="request" class="java.util.ArrayList<ict.bean.BorrowBean>"/>
         <%String procLimit = (String) request.getAttribute("procLimit");%>
         <%String[] equName = (String[]) request.getAttribute("equName");%>
@@ -136,7 +131,7 @@
                         <h1>Process Borrow Request</h1>
                         <br>
                         <div>
-                            <ipage:page fullsize="<%=records.size()%>" limit="<%=procLimit%>" page="processRequest"  />  
+                            <ipage:page fullsize="<%=records.size()%>" limit="<%=procLimit%>" page="processRequest"  />
                         </div>
                         <form action="BorrowController" class='s_bar_con'>
                             <input type="hidden" name="action" value="search">
@@ -148,13 +143,13 @@
                             <input type="text" name="searchword" class="s_bar"><button type="submit" >Search</button>
                         </form>
                         <div id="usertable-container">
-                            <proc:procBrw records="<%=records%>" equName="<%=equName%>" limit="<%=procLimit%>" page="processRequest"  />  
+                            <proc:procBrw records="<%=records%>" equName="<%=equName%>" limit="<%=procLimit%>" page="processRequest"  />
                         </div>
                     </div>
                 </div>​
             </div>​
-        </div>
-    </body>
+        </div>​
+    </body>​
     <script>
         function isSubmit(e) {
             var target = event.target || event.srcElement;
@@ -164,10 +159,11 @@
             var text = target.dataset.text;
             var stock = target.dataset.stock;
             var eid = target.dataset.eid;
+            var DEFAULT_LIMIT = "10";
             var r = confirm(txt + " request of " + text + " ?");
             console.log(txt + " : " + id);
             if (r == true) {
-                window.location.href = "BorrowController?action=procRequest&request=" + txt + "&id=" + id;
+                window.location.href = "BorrowController?action=procRequest&request=" + txt + "&id=" + id +"&limit="+DEFAULT_LIMIT;
             } else {
                 return;
             }

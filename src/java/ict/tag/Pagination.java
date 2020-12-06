@@ -56,7 +56,7 @@ public class Pagination extends SimpleTagSupport {
                             + "<a class=\"paginationbtn\" href=\"BorrowController?action=" + page + "&limit=" + (limit - 5) + "\">Prev</a>";
                 }
 
-                if (totalPage == 1 || totalPage == currentPage) {
+                if (totalPage <= 1 || totalPage == currentPage) {
                     temp += "<a class=\"unactive paginationbtn\">Next</a>";
                 } else {
                     temp += "<a class=\"paginationbtn\" href=\"BorrowController?action=" + page + "&limit=" + (limit + 5) + "\">Next</a>";
@@ -71,7 +71,7 @@ public class Pagination extends SimpleTagSupport {
                             + "<a href=\"InventoryController?action=list&limit=" + (limit - 5) + "\">Prev</a>";
                 }
 
-                if (totalPage == 1 || totalPage == currentPage) {
+                if (totalPage <= 1 || totalPage == currentPage) {
                     temp += "<a class=\"unactive\">Next</a>";
                 } else {
                     temp += "<a href=\"InventoryController?action=list&limit=" + (limit + 5) + "\">Next</a>";
@@ -86,7 +86,7 @@ public class Pagination extends SimpleTagSupport {
                             + "<a href=\"BorrowController?action=viewRequest&limit=" + (limit - 10) + "\">Prev</a>";
                 }
 
-                if (totalPage == 1 || totalPage == currentPage) {
+                if (totalPage <= 1 || totalPage == currentPage) {
                     temp += "<a class=\"unactive\">Next</a>";
                 } else {
                     temp += "<a href=\"BorrowController?action=viewRequest&limit=" + (limit + 10) + "\">Next</a>";
@@ -101,7 +101,7 @@ public class Pagination extends SimpleTagSupport {
                             + "<a href=\"CheckInOutController?action=viewCheckIn&limit=" + (limit - 10) + "\">Prev</a>";
                 }
 
-                if (totalPage == 1 || totalPage == currentPage) {
+                if (totalPage <= 1 || totalPage == currentPage) {
                     temp += "<a class=\"unactive\">Next</a>";
                 } else {
                     temp += "<a href=\"CheckInOutController?action=viewCheckIn&limit=" + (limit + 10) + "\">Next</a>";
@@ -116,7 +116,7 @@ public class Pagination extends SimpleTagSupport {
                             + "<a href=\"CheckInOutController?action=viewCheckOut&limit=" + (limit - 10) + "\">Prev</a>";
                 }
 
-                if (totalPage == 1 || totalPage == currentPage) {
+                if (totalPage <= 1 || totalPage == currentPage) {
                     temp += "<a class=\"unactive\">Next</a>";
                 } else {
                     temp += "<a href=\"CheckInOutController?action=viewCheckOut&limit=" + (limit + 10) + "\">Next</a>";
@@ -124,7 +124,6 @@ public class Pagination extends SimpleTagSupport {
             }
 
             out.println(temp + "</div>");
-            System.out.print(temp);
 
         } catch (IOException e) {
             System.out.println("Error generating : " + e);

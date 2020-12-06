@@ -258,6 +258,76 @@ public class BorrowDB {
         }
         return arraylist;
     }
+    
+    public ArrayList<BorrowBean> queryBorrowByStatusAndEID(String status, int id) {
+        Connection cnnct = null;
+        PreparedStatement pStmnt = null;
+        BorrowBean bb = null;
+        ArrayList<BorrowBean> arraylist = new ArrayList<>();
+        try {
+            cnnct = getConnection();
+            String preQueryStatement = "Select * from borrowlist where status = ? AND equipment_id = ?";
+            pStmnt = cnnct.prepareStatement(preQueryStatement);
+            pStmnt.setString(1, status);
+            pStmnt.setInt(2, id);
+            ResultSet rs = null;
+            rs = pStmnt.executeQuery();
+            while (rs.next()) {
+                bb = new BorrowBean();
+                bb.setBorrow_id(rs.getInt(1));
+                bb.setEquipment_id(rs.getInt(2));
+                bb.setUserId(rs.getString(3));
+                bb.setQuantity(rs.getInt(4));
+                bb.setStatus(rs.getString(5));
+                arraylist.add(bb);
+            }
+            pStmnt.close();
+            cnnct.close();
+        } catch (SQLException ex) {
+            while (ex != null) {
+                ex.printStackTrace();
+                ex = ex.getNextException();
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return arraylist;
+    }
+    
+    public ArrayList<BorrowBean> queryBorrowByStatusAndSID(String status, int id) {
+        Connection cnnct = null;
+        PreparedStatement pStmnt = null;
+        BorrowBean bb = null;
+        ArrayList<BorrowBean> arraylist = new ArrayList<>();
+        try {
+            cnnct = getConnection();
+            String preQueryStatement = "Select * from borrowlist where status = ? AND userId = ?";
+            pStmnt = cnnct.prepareStatement(preQueryStatement);
+            pStmnt.setString(1, status);
+            pStmnt.setInt(2, id);
+            ResultSet rs = null;
+            rs = pStmnt.executeQuery();
+            while (rs.next()) {
+                bb = new BorrowBean();
+                bb.setBorrow_id(rs.getInt(1));
+                bb.setEquipment_id(rs.getInt(2));
+                bb.setUserId(rs.getString(3));
+                bb.setQuantity(rs.getInt(4));
+                bb.setStatus(rs.getString(5));
+                arraylist.add(bb);
+            }
+            pStmnt.close();
+            cnnct.close();
+        } catch (SQLException ex) {
+            while (ex != null) {
+                ex.printStackTrace();
+                ex = ex.getNextException();
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return arraylist;
+    }
 
     public boolean delRecord(int borrow_id) {
         Connection cnnct = null;

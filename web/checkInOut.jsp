@@ -102,6 +102,43 @@
                 text-transform: uppercase;
                 text-decoration: none;
             }
+            .s_bar_con{
+                margin-bottom: 10px;
+                display: flex;
+                justify-content: space-between;
+            }
+            .s_bar{
+                width: 70%;
+                padding:5px;
+                font-size: 16px;
+            }
+            .s_bar~*{
+                text-decoration: none;
+                box-sizing: border-box;
+                cursor: pointer;
+                padding: 10px 15px;
+                font-size: 15px;
+                background-color: #000033;
+                color: white;
+                border-style: none;
+                border-radius: 5px;
+                transition-timing-function: ease-in-out;
+                transition-duration: .23s;font-weight: 700;
+                text-transform: uppercase;
+                text-decoration: none;
+            }
+            tr>td:last-child *{
+                color: blue;
+                border-style: none;
+                background-color: transparent;
+                font-size: 16px;
+                margin:5px;
+                cursor: pointer;
+            }
+            tr>td:last-child *:hover{
+                text-decoration: none;
+                color: red;
+            }
         </style>
     </head>​
     <body>​
@@ -112,7 +149,7 @@
             String type = (String) request.getAttribute("inOrOut");
             String isCheckInActive = ("Check-In".equalsIgnoreCase(type)) ? "unactive" : "";
             String isCheckOutActive = ("Check-In".equalsIgnoreCase(type)) ? "" : "unactive";
-            ArrayList<CheckInOutBean> dueTimeList = ( ArrayList<CheckInOutBean>)request.getAttribute("dueTimeList");
+            ArrayList<CheckInOutBean> dueTimeList = (ArrayList<CheckInOutBean>) request.getAttribute("dueTimeList");
         %>
 
         <div id="maincontainer">​

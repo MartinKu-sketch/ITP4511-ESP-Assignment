@@ -62,7 +62,7 @@ public class CheckInOutController extends HttpServlet {
             rd.forward(request, response);
 
         } else if ("viewCheckOut".equalsIgnoreCase(action)) {
-             ArrayList<BorrowBean> records = db.queryBorrowByStatus("Check-In");
+            ArrayList<BorrowBean> records = db.queryBorrowByStatus("Check-In");
             String[] equName = new String[records.size()];
             ArrayList<CheckInOutBean> dueTimeList = cdb.queryCheck();
             for (int i = 0; i < records.size(); i++) {
@@ -71,29 +71,28 @@ public class CheckInOutController extends HttpServlet {
             request.setAttribute("records", records);
             request.setAttribute("equName", equName);
             request.setAttribute("dueTimeList", dueTimeList);
-            System.out.print("duetimesize: " +dueTimeList.size());
             request.setAttribute("procLimit", limit);
             request.setAttribute("inOrOut", "Check-Out");
             RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/checkInOut.jsp");
             rd.forward(request, response);
-        }   else if ("Check-In".equalsIgnoreCase(action)) {
+        } else if ("Check-In".equalsIgnoreCase(action)) {
             String userReq = request.getParameter("request");
             int brwID = Integer.parseInt(request.getParameter("id"));
             BorrowBean ub = db.queryBorrowByID(brwID);
             int stock = ub.getQuantity();
-            int eid =  ub.getEquipment_id();
+            int eid = ub.getEquipment_id();
             int currentStock = edb.queryQtyByID(eid);
             ub.setStatus(userReq);
             ub.setQuantity(currentStock - stock);
             db.editRecord(ub);
             cdb.addRecord(brwID, LocalDate.now(), LocalDate.now().plusDays(14));
-             response.sendRedirect("CheckInOutController?action=viewCheckIn&limit=10");
-        }  else if ("Check-Out".equalsIgnoreCase(action)) {
+            response.sendRedirect("CheckInOutController?action=viewCheckIn&limit=10");
+        } else if ("Check-Out".equalsIgnoreCase(action)) {
             String userReq = request.getParameter("request");
             int brwID = Integer.parseInt(request.getParameter("id"));
             BorrowBean ub = db.queryBorrowByID(brwID);
             int stock = ub.getQuantity();
-            int eid =  ub.getEquipment_id();
+            int eid = ub.getEquipment_id();
             int currentStock = edb.queryQtyByID(eid);
             ub.setStatus(userReq);
             ub.setQuantity(currentStock + stock);
@@ -101,26 +100,35 @@ public class CheckInOutController extends HttpServlet {
             cdb.delRecord(brwID);
             response.sendRedirect("CheckInOutController?action=viewCheckOut&limit=10");
         } else if ("search".equalsIgnoreCase(action)) {
-//            ArrayList<BorrowBean> records = null;
-//            String searchtype = request.getParameter("searchtype");
-////            String procLimit = "10";
-//            int searchword = Integer.parseInt(request.getParameter("searchword"));
-//            if (searchtype.equals("eid")) {
-//                records = db.queryBorrowByEquipID(searchword);
-//            } else if (searchtype.equals("sid")) {
-//                records = db.queryBorrowByStudentID(searchword);
-//            }
-//
-//            String[] equName = new String[records.size()];
-//            for (int i = 0; i < records.size(); i++) {
-//                equName[i] = edb.queryEquipNameByID(records.get(i).getEquipment_id());
-//            }
-//
-//            request.setAttribute("records", records);
-//            request.setAttribute("equName", equName);
-//            request.setAttribute("procLimit", limit);
-//            RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/processBorrowReq.jsp");
-//            rd.forward(request, response);
+            ArrayList<BorrowBean> records = null;
+            ArrayList<CheckInOutBean> dueTimeList = new ArrayList<CheckInOutBean>();
+            String searchtype = request.getParameter("searchtype");
+            int searchword = Integer.parseInt(request.getParameter("searchword"));
+            String CheckInOrOut = request.getParameter("inOrOut");
+            String status = (CheckInOrOut.equalsIgnoreCase("Check-In")) ? "Accept" : "Check-In";
+
+            //get borrow by equip id or student id
+            if (searchtype.equals("eid")) {
+                records = db.queryBorrowByStatusAndEID(status, searchword);
+            } else if (searchtype.equals("sid")) {
+                records = db.queryBorrowByStatusAndSID(status, searchword);
+            }
+
+            String[] equName = new String[records.size()];
+            for (int i = 0; i < records.size(); i++) {
+                equName[i] = edb.queryEquipNameByID(records.get(i).getEquipment_id());
+                if (CheckInOrOut.equalsIgnoreCase("Check-Out")) {
+                    dueTimeList.add(cdb.queryCheckByID(records.get(i).getBorrow_id()));
+                    request.setAttribute("dueTimeList", dueTimeList);
+                }
+            }
+
+            request.setAttribute("records", records);
+            request.setAttribute("equName", equName);
+            request.setAttribute("procLimit", limit);
+            request.setAttribute("inOrOut", CheckInOrOut);
+            RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/checkInOut.jsp");
+            rd.forward(request, response);
 
         } else {
             PrintWriter out = response.getWriter();

@@ -57,6 +57,7 @@ public class ProcessAndCheckBrw extends SimpleTagSupport {
 
             out.println("<table id=\"usertable\">\n"
                     + "<tr>\n"
+                    + "<th>Borrow ID</th>\n"
                     + "<th>Equipment ID</th>\n"
                     + "<th>Equipment Name</th>\n"
                     + "<th>Student ID</th>\n"
@@ -76,6 +77,7 @@ public class ProcessAndCheckBrw extends SimpleTagSupport {
                         + " from Student ID: " + ub.getUserId();
                 if (page.equalsIgnoreCase("processRequest")) {
                     out.println("<tr>"
+                            + "<td>" + ub.getBorrow_id() + "</td>"
                             + "<td>" + ub.getEquipment_id() + "</td>"
                             + "<td>" + equName[i] + "</td>"
                             + "<td>" + ub.getUserId() + "</td>"
@@ -89,6 +91,7 @@ public class ProcessAndCheckBrw extends SimpleTagSupport {
                             + "</tr>");
                 } else if (page.equalsIgnoreCase("Check-In")) {
                     out.println("<tr>"
+                            + "<td>" + ub.getBorrow_id() + "</td>"
                             + "<td>" + ub.getEquipment_id() + "</td>"
                             + "<td>" + equName[i] + "</td>"
                             + "<td>" + ub.getUserId() + "</td>"
@@ -99,6 +102,7 @@ public class ProcessAndCheckBrw extends SimpleTagSupport {
                 } else if (page.equalsIgnoreCase("Check-Out")) {
                     CheckInOutBean cb = dueTimeList.get(i);
                     out.println("<tr>"
+                            + "<td>" + ub.getBorrow_id() + "</td>"
                             + "<td>" + ub.getEquipment_id() + "</td>"
                             + "<td>" + equName[i] + "</td>"
                             + "<td>" + ub.getUserId() + "</td>"

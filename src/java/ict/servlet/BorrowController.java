@@ -152,12 +152,12 @@ public class BorrowController extends HttpServlet {
                 db.editRecord(ub);
                 String title = "Stock not Enough";
                 String desc = "Request has been rejected automatically";
-                String link = "BorrowController?action=viewRequest";
+                String link = "BorrowController?action=viewRequest&limit=10";
                 response.sendRedirect("errorMsg.jsp?title=" + title + "&desc=" + desc + "&link=" + link);
             } else {
                 ub.setStatus(userReq);
                 db.editRecord(ub);
-                response.sendRedirect("BorrowController?action=viewRequest");
+                response.sendRedirect("BorrowController?action=viewRequest&limit=10");
             }
 
         } else if ("search".equalsIgnoreCase(action)) {
