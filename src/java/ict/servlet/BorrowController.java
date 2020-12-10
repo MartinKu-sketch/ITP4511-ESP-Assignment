@@ -163,7 +163,10 @@ public class BorrowController extends HttpServlet {
         } else if ("search".equalsIgnoreCase(action)) {
             ArrayList<BorrowBean> records = null;
             String searchtype = request.getParameter("searchtype");
-//            String procLimit = "10";
+if(request.getParameter("searchword").equalsIgnoreCase("")){
+    response.sendRedirect("BorrowController?action=viewRequest&limit=10");
+                return;
+            }
             int searchword = Integer.parseInt(request.getParameter("searchword"));
             if (searchtype.equals("eid")) {
                 records = db.queryBorrowByEquipID(searchword);

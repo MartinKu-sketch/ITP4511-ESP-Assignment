@@ -97,12 +97,16 @@ public class CheckInOutController extends HttpServlet {
             ub.setStatus(userReq);
             ub.setQuantity(currentStock + stock);
             db.editRecord(ub);
-            cdb.delRecord(brwID);
+//            cdb.delRecord(brwID);  not yet
             response.sendRedirect("CheckInOutController?action=viewCheckOut&limit=10");
         } else if ("search".equalsIgnoreCase(action)) {
             ArrayList<BorrowBean> records = null;
             ArrayList<CheckInOutBean> dueTimeList = new ArrayList<CheckInOutBean>();
             String searchtype = request.getParameter("searchtype");
+            if(request.getParameter("searchword").equalsIgnoreCase("")){
+                response.sendRedirect("CheckInOutController?action=viewCheckIn&limit=10");
+                return;
+            }
             int searchword = Integer.parseInt(request.getParameter("searchword"));
             String CheckInOrOut = request.getParameter("inOrOut");
             String status = (CheckInOrOut.equalsIgnoreCase("Check-In")) ? "Accept" : "Check-In";

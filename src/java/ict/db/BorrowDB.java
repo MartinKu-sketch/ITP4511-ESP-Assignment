@@ -156,6 +156,41 @@ public class BorrowDB {
         }
         return bb;
     }
+    
+    
+    public ArrayList<BorrowBean> queryBIDAndQtyByEID(int id) {
+        Connection cnnct = null;
+        PreparedStatement pStmnt = null;
+        BorrowBean bb = null;
+        ArrayList<BorrowBean> arraylist = new ArrayList<BorrowBean>();
+        try {
+            cnnct = getConnection();
+            String preQueryStatement = "Select borrow_id, quantity from borrowlist where equipment_id = ? AND status = ? OR status = ?";
+            pStmnt = cnnct.prepareStatement(preQueryStatement);
+            pStmnt.setInt(1, id);
+            pStmnt.setString(2, "Check-In");
+            pStmnt.setString(3, "Check-Out");
+            ResultSet rs = null;
+            rs = pStmnt.executeQuery();
+            while (rs.next()) {
+                bb = new BorrowBean();
+                bb.setBorrow_id(rs.getInt(1));
+                bb.setQuantity(rs.getInt(2));
+                arraylist.add(bb);
+            }
+            pStmnt.close();
+            cnnct.close();
+        } catch (SQLException ex) {
+            while (ex != null) {
+                ex.printStackTrace();
+                ex = ex.getNextException();
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return arraylist;
+    }
+    
     public ArrayList<BorrowBean> queryBorrowByEquipID(int id) {
         Connection cnnct = null;
         PreparedStatement pStmnt = null;

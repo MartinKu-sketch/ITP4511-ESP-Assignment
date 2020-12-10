@@ -17,7 +17,7 @@ public class Pagination extends SimpleTagSupport {
 
     private int fullsize;
     private int limit;
-    private String page;
+    private String page, role;
     private int RECORD_SIZE;
 
     public void setFullsize(int s) {
@@ -31,6 +31,10 @@ public class Pagination extends SimpleTagSupport {
 
     public void setPage(String page) {
         this.page = page;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     @Override
@@ -120,6 +124,36 @@ public class Pagination extends SimpleTagSupport {
                     temp += "<a class=\"unactive\">Next</a>";
                 } else {
                     temp += "<a href=\"CheckInOutController?action=viewCheckOut&limit=" + (limit + 10) + "\">Next</a>";
+                }
+            }else if (page.equalsIgnoreCase("viewOverdue")) {//view check out records
+                if (currentPage == 1) {
+                    temp += "<div class=\"btn_pos\">"
+                            + "<a class=\"unactive\">Prev</a>";
+
+                } else {
+                    temp += "<div class=\"btn_pos\">"
+                            + "<a href=\"ReportController?action=viewOverdue&role="+role+"limit=" + (limit - 10) + "\">Prev</a>";
+                }
+
+                if (totalPage <= 1 || totalPage == currentPage) {
+                    temp += "<a class=\"unactive\">Next</a>";
+                } else {
+                    temp += "<a href=\"ReportController?action=viewOverdue&role="+role+"&limit=" + (limit + 10) + "\">Next</a>";
+                }
+            }else if (page.equalsIgnoreCase("viewAllBrw")) {//view check out records
+                if (currentPage == 1) {
+                    temp += "<div class=\"btn_pos\">"
+                            + "<a class=\"unactive\">Prev</a>";
+
+                } else {
+                    temp += "<div class=\"btn_pos\">"
+                            + "<a href=\"ReportController?action=viewAllBrw&role="+role+"limit=" + (limit - 10) + "\">Prev</a>";
+                }
+
+                if (totalPage <= 1 || totalPage == currentPage) {
+                    temp += "<a class=\"unactive\">Next</a>";
+                } else {
+                    temp += "<a href=\"ReportController?action=viewAllBrw&role="+role+"&limit=" + (limit + 10) + "\">Next</a>";
                 }
             }
 

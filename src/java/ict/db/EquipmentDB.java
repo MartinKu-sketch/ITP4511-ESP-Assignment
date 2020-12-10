@@ -250,7 +250,8 @@ public class EquipmentDB {
         }
         return name;
     }
-
+    
+   
     public boolean delRecord(int equipment_id) {
         Connection cnnct = null;
         PreparedStatement pStmnt = null;

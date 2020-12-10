@@ -74,6 +74,11 @@ public class InventoryController extends HttpServlet {
         } else if ("Add".equalsIgnoreCase(action)) {
             String name = request.getParameter("name");
             String status = request.getParameter("status");
+            if(status.equalsIgnoreCase("true")){
+                status = "available";
+            }else{
+                status = "unavailable";
+            }
             String desc = request.getParameter("desc");
             int stock = Integer.parseInt( request.getParameter("stock") );
             String visibility = ( "true".equalsIgnoreCase(request.getParameter("visibility")) ) ? "true" : "false";

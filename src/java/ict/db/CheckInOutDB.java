@@ -15,6 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 /**
@@ -123,6 +124,66 @@ public class CheckInOutDB {
         return cb;
     }
 
+    public boolean queryIsOverdue(int id) {
+        Connection cnnct = null;
+        PreparedStatement pStmnt = null;
+        CheckInOutBean cb = new CheckInOutBean();
+        int count = 0;
+        try {
+            cnnct = getConnection();
+            String preQueryStatement = "Select * from check_in_out WHERE borrow_id = ?";
+
+            pStmnt = cnnct.prepareStatement(preQueryStatement);
+            pStmnt.setInt(1, id);
+            ResultSet rs = pStmnt.executeQuery();
+            while (rs.next()) {
+                cb.setBorrow_id(rs.getInt(1));
+                cb.setStart((Date) rs.getObject(2));
+                cb.setEnd((Date) rs.getObject(3));
+            }
+            pStmnt.close();
+            cnnct.close();
+        } catch (SQLException ex) {
+            while (ex != null) {
+                ex = ex.getNextException();
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        System.out.println("date :"+cb.getEnd());
+        return cb.getEnd().isBefore(LocalDate.now());
+    }
+
+    public CheckInOutBean checkTimeByID(int id) {
+        Connection cnnct = null;
+        PreparedStatement pStmnt = null;
+        CheckInOutBean cb = new CheckInOutBean();
+        int count = 0;
+        try {
+            cnnct = getConnection();
+            String preQueryStatement = "Select * from check_in_out WHERE borrow_id = ?";
+
+            pStmnt = cnnct.prepareStatement(preQueryStatement);
+            pStmnt.setInt(1, id);
+            ResultSet rs = pStmnt.executeQuery();
+            while (rs.next()) {
+                cb.setBorrow_id(rs.getInt(1));
+                cb.setStart((Date) rs.getObject(2));
+                cb.setEnd((Date) rs.getObject(3));
+            }
+            pStmnt.close();
+            cnnct.close();
+        } catch (SQLException ex) {
+            while (ex != null) {
+                ex = ex.getNextException();
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        System.out.println("date :"+cb.getEnd());
+        return cb;
+    }
+
     public ArrayList<CheckInOutBean> queryCheck() {
         Connection cnnct = null;
         PreparedStatement pStmnt = null;
@@ -139,8 +200,6 @@ public class CheckInOutDB {
                 cb.setStart((Date) rs.getObject(2));
                 cb.setEnd((Date) rs.getObject(3));
                 arraylist.add(cb);
-                System.out.println("id: " + cb.getBorrow_id());
-                System.out.println("count: " +arraylist.size());
             }
             System.out.println("size: " + arraylist.size());
             pStmnt.close();
