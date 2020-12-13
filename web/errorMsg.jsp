@@ -15,7 +15,7 @@
     <center>
         <h1><%=request.getParameter("title")%></h1>
         <h2><%=request.getParameter("desc")%></h2>
-        <a href="<%=request.getParameter("link")%>">Back</a>
+        <a href="<%=request.getParameter("link")+"&limit="+request.getParameter("limit")%>">Back</a>
     </center>
 </body>
 </html>

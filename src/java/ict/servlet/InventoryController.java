@@ -6,6 +6,7 @@
 package ict.servlet;
 
 import ict.bean.EquipmentBean;
+import ict.bean.UserBean;
 import ict.db.EquipmentDB;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,6 +17,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -42,69 +44,108 @@ public class InventoryController extends HttpServlet {
         String limit = request.getParameter("limit");
 
         if ("list".equalsIgnoreCase(action)) {
-            ArrayList<EquipmentBean> equips = db.queryEquip();
-            request.setAttribute("inventory", equips);
-            request.setAttribute("limit", limit);
-            RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/inventory.jsp");
-            rd.forward(request, response);
-        } else if ("studentlist".equalsIgnoreCase(action)) {
-            ArrayList<EquipmentBean> equips = db.queryEquipByVisibility();
-            request.setAttribute("inventory", equips);
-            request.setAttribute("limit", limit);
-            RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/equipmentBorrow.jsp");
-            rd.forward(request, response);
-        } else if ("Delete".equalsIgnoreCase(action)) {
-            String id = request.getParameter("id");
-            if (id != null) {
-                db.delRecord(Integer.parseInt(id));
-                response.sendRedirect("InventoryController?action=list&limit=5");
-            }
-        } else if ("Edit".equalsIgnoreCase(action)) {
-            String id = request.getParameter("id");
-            if (id != null) {
-                ArrayList equips = db.queryEquip();
+            if (!isAuthenticated(request) || !isAuthenticatedRole(request).equals("Technician") && !isAuthenticatedRole(request).equals("Senior Technician")) {
+                response.sendRedirect("/build/NoPermission.jsp");
+            } else {
+                ArrayList<EquipmentBean> equips = db.queryEquip();
                 request.setAttribute("inventory", equips);
-                request.setAttribute("limit", DEFAULT_LIMIT);
-                EquipmentBean eb = db.queryEquipByID(Integer.parseInt(id));
-                request.setAttribute("editB", eb);
-                RequestDispatcher rd;
-                rd = getServletContext().getRequestDispatcher("/inventory.jsp");
+                request.setAttribute("limit", limit);
+                RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/inventory.jsp");
                 rd.forward(request, response);
             }
-        } else if ("Add".equalsIgnoreCase(action)) {
-            String name = request.getParameter("name");
-            String status = request.getParameter("status");
-            if(status.equalsIgnoreCase("true")){
-                status = "available";
-            }else{
-                status = "unavailable";
+        } else if ("studentlist".equalsIgnoreCase(action)) {
+            if (!isAuthenticated(request) || !isAuthenticatedRole(request).equals("Technician") && !isAuthenticatedRole(request).equals("Senior Technician")) {
+                response.sendRedirect("/build/NoPermission.jsp");
+            } else {
+                ArrayList<EquipmentBean> equips = db.queryEquipByVisibility();
+                request.setAttribute("inventory", equips);
+                request.setAttribute("limit", limit);
+                RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/equipmentBorrow.jsp");
+                rd.forward(request, response);
             }
-            String desc = request.getParameter("desc");
-            int stock = Integer.parseInt( request.getParameter("stock") );
-            String visibility = ( "true".equalsIgnoreCase(request.getParameter("visibility")) ) ? "true" : "false";
-            db.addRecord(name, status, desc, stock, visibility);
-            response.sendRedirect("InventoryController?action=list&limit=5");
+        } else if ("Delete".equalsIgnoreCase(action)) {
+            if (!isAuthenticated(request) || !isAuthenticatedRole(request).equals("Technician") && !isAuthenticatedRole(request).equals("Senior Technician")) {
+                response.sendRedirect("/build/NoPermission.jsp");
+            } else {
+                String id = request.getParameter("id");
+                if (id != null) {
+                    db.delRecord(Integer.parseInt(id));
+                    response.sendRedirect("InventoryController?action=list&limit=5");
+                }
+            }
+        } else if ("Edit".equalsIgnoreCase(action)) {
+            if (!isAuthenticated(request) || !isAuthenticatedRole(request).equals("Technician") && !isAuthenticatedRole(request).equals("Senior Technician")) {
+                response.sendRedirect("/build/NoPermission.jsp");
+            } else {
+                String id = request.getParameter("id");
+                if (id != null) {
+                    ArrayList equips = db.queryEquip();
+                    request.setAttribute("inventory", equips);
+                    request.setAttribute("limit", DEFAULT_LIMIT);
+                    EquipmentBean eb = db.queryEquipByID(Integer.parseInt(id));
+                    request.setAttribute("editB", eb);
+                    RequestDispatcher rd;
+                    rd = getServletContext().getRequestDispatcher("/inventory.jsp");
+                    rd.forward(request, response);
+                }
+            }
+        } else if ("Add".equalsIgnoreCase(action)) {
+            if (!isAuthenticated(request) || !isAuthenticatedRole(request).equals("Technician") && !isAuthenticatedRole(request).equals("Senior Technician")) {
+                response.sendRedirect("/build/NoPermission.jsp");
+            } else {
+                String name = request.getParameter("name");
+                String status = request.getParameter("status");
+                if (status.equalsIgnoreCase("true")) {
+                    status = "available";
+                } else {
+                    status = "unavailable";
+                }
+                String desc = request.getParameter("desc");
+                int stock = Integer.parseInt(request.getParameter("stock"));
+                String visibility = ("true".equalsIgnoreCase(request.getParameter("visibility"))) ? "true" : "false";
+                db.addRecord(name, status, desc, stock, visibility);
+                response.sendRedirect("InventoryController?action=list&limit=5");
+            }
         } else if ("Update".equalsIgnoreCase(action)) {
-            String id = request.getParameter("id");
-           String name = request.getParameter("name");
-            String status =  ( "true".equalsIgnoreCase(request.getParameter("status")) ) ? "available" : "unavailable";
-            String desc = request.getParameter("desc");
-            int stock = Integer.parseInt( request.getParameter("stock") );
-            String visibility = ( "true".equalsIgnoreCase(request.getParameter("visibility")) ) ? "true" : "false";
-            
-            EquipmentBean ub = new EquipmentBean();
-            ub.setEquipment_id(Integer.parseInt(id));
+            if (!isAuthenticated(request) || !isAuthenticatedRole(request).equals("Technician") && !isAuthenticatedRole(request).equals("Senior Technician")) {
+                response.sendRedirect("/build/NoPermission.jsp");
+            } else {
+                String id = request.getParameter("id");
+                String name = request.getParameter("name");
+                String status = ("true".equalsIgnoreCase(request.getParameter("status"))) ? "available" : "unavailable";
+                String desc = request.getParameter("desc");
+                int stock = Integer.parseInt(request.getParameter("stock"));
+                String visibility = ("true".equalsIgnoreCase(request.getParameter("visibility"))) ? "true" : "false";
+
+                EquipmentBean ub = new EquipmentBean();
+                ub.setEquipment_id(Integer.parseInt(id));
                 ub.setEquipment_name(name);
                 ub.setStatus(status);
                 ub.setDescription(desc);
                 ub.setStock(stock);
                 ub.setVisibility(visibility);
-            db.editRecord(ub);
-            response.sendRedirect("InventoryController?action=list&limit=5");
-        }  else {
+                db.editRecord(ub);
+                response.sendRedirect("InventoryController?action=list&limit=5");
+            }
+        } else {
             PrintWriter out = response.getWriter();
             out.println("NO such action :" + action);
         }
+    }
+
+    private boolean isAuthenticated(HttpServletRequest request) {
+        boolean result = false;
+        HttpSession session = request.getSession();
+        if (session.getAttribute("userId") != null) {
+            result = true;
+        }
+        return result;
+    }
+
+    private String isAuthenticatedRole(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        UserBean bean = (UserBean) session.getAttribute("userId");
+        return bean.getRole();
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -20,7 +20,7 @@
             }
 
             #usertable-container {
-                height: 300px;
+                height: 220px;
                 overflow-x: scroll;
             }
 

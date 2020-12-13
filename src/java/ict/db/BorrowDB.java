@@ -96,7 +96,7 @@ public class BorrowDB {
         Connection cnnct = null;
         PreparedStatement pStmnt = null;
         BorrowBean bb = null;
-        ArrayList<BorrowBean> arraylist = new ArrayList<BorrowBean>();
+        ArrayList<BorrowBean> arraylist = new ArrayList<>();
         try {
             cnnct = getConnection();
             String preQueryStatement = "Select * from borrowlist";
@@ -157,12 +157,45 @@ public class BorrowDB {
         return bb;
     }
     
+    public BorrowBean queryBorrowByIDAndSid(int id,int sid) {
+        Connection cnnct = null;
+        PreparedStatement pStmnt = null;
+        BorrowBean bb = null;
+        try {
+            cnnct = getConnection();
+            String preQueryStatement = "Select * from borrowlist where borrow_id = ? AND userId = ?";
+            pStmnt = cnnct.prepareStatement(preQueryStatement);
+            pStmnt.setInt(1, id);
+            pStmnt.setInt(2, sid);
+            ResultSet rs = null;
+            rs = pStmnt.executeQuery();
+            while (rs.next()) {
+                bb = new BorrowBean();
+                bb.setBorrow_id(rs.getInt(1));
+                bb.setEquipment_id(rs.getInt(2));
+                bb.setUserId(rs.getString(3));
+                bb.setQuantity(rs.getInt(4));
+                bb.setStatus(rs.getString(5));
+            }
+            pStmnt.close();
+            cnnct.close();
+        } catch (SQLException ex) {
+            while (ex != null) {
+                ex.printStackTrace();
+                ex = ex.getNextException();
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return bb;
+    }
+    
     
     public ArrayList<BorrowBean> queryBIDAndQtyByEID(int id) {
         Connection cnnct = null;
         PreparedStatement pStmnt = null;
         BorrowBean bb = null;
-        ArrayList<BorrowBean> arraylist = new ArrayList<BorrowBean>();
+        ArrayList<BorrowBean> arraylist = new ArrayList<>();
         try {
             cnnct = getConnection();
             String preQueryStatement = "Select borrow_id, quantity from borrowlist where equipment_id = ? AND status = ? OR status = ?";
@@ -232,10 +265,9 @@ public class BorrowDB {
         ArrayList<BorrowBean> arraylist = new ArrayList<BorrowBean>();
         try {
             cnnct = getConnection();
-            String preQueryStatement = "Select * from borrowlist where userId = ? AND status = ?";
+            String preQueryStatement = "Select * from borrowlist where userId = ?";
             pStmnt = cnnct.prepareStatement(preQueryStatement);
             pStmnt.setInt(1, id);
-            pStmnt.setString(2, "Pending");
             ResultSet rs = null;
             rs = pStmnt.executeQuery();
             while (rs.next()) {

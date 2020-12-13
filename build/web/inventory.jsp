@@ -245,7 +245,12 @@
 
             var txt = target.textContent;
             var id = target.id
+            if(txt === "Add"){
+                var r = confirm("Perform " + txt + " action ?");
+            }else{
+                
             var r = confirm("Perform " + txt + " action for id= " + id + " ?");
+            }
             console.log(txt + " : " + id);
             if (r == true) {
                 if ("Delete" === txt) {

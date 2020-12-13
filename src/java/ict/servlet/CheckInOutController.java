@@ -7,6 +7,7 @@ package ict.servlet;
 
 import ict.bean.BorrowBean;
 import ict.bean.CheckInOutBean;
+import ict.bean.UserBean;
 import ict.db.BorrowDB;
 import ict.db.CheckInOutDB;
 import ict.db.EquipmentDB;
@@ -20,6 +21,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -49,95 +51,128 @@ public class CheckInOutController extends HttpServlet {
         String limit = request.getParameter("limit");
 
         if ("viewCheckIn".equalsIgnoreCase(action)) {
-            ArrayList<BorrowBean> records = db.queryBorrowByStatus("Accept");
-            String[] equName = new String[records.size()];
-            for (int i = 0; i < records.size(); i++) {
-                equName[i] = edb.queryEquipNameByID(records.get(i).getEquipment_id());
-            }
-            request.setAttribute("records", records);
-            request.setAttribute("equName", equName);
-            request.setAttribute("procLimit", limit);
-            request.setAttribute("inOrOut", "Check-In");
-            RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/checkInOut.jsp");
-            rd.forward(request, response);
-
-        } else if ("viewCheckOut".equalsIgnoreCase(action)) {
-            ArrayList<BorrowBean> records = db.queryBorrowByStatus("Check-In");
-            String[] equName = new String[records.size()];
-            ArrayList<CheckInOutBean> dueTimeList = cdb.queryCheck();
-            for (int i = 0; i < records.size(); i++) {
-                equName[i] = edb.queryEquipNameByID(records.get(i).getEquipment_id());
-            }
-            request.setAttribute("records", records);
-            request.setAttribute("equName", equName);
-            request.setAttribute("dueTimeList", dueTimeList);
-            request.setAttribute("procLimit", limit);
-            request.setAttribute("inOrOut", "Check-Out");
-            RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/checkInOut.jsp");
-            rd.forward(request, response);
-        } else if ("Check-In".equalsIgnoreCase(action)) {
-            String userReq = request.getParameter("request");
-            int brwID = Integer.parseInt(request.getParameter("id"));
-            BorrowBean ub = db.queryBorrowByID(brwID);
-            int stock = ub.getQuantity();
-            int eid = ub.getEquipment_id();
-            int currentStock = edb.queryQtyByID(eid);
-            ub.setStatus(userReq);
-            ub.setQuantity(currentStock - stock);
-            db.editRecord(ub);
-            cdb.addRecord(brwID, LocalDate.now(), LocalDate.now().plusDays(14));
-            response.sendRedirect("CheckInOutController?action=viewCheckIn&limit=10");
-        } else if ("Check-Out".equalsIgnoreCase(action)) {
-            String userReq = request.getParameter("request");
-            int brwID = Integer.parseInt(request.getParameter("id"));
-            BorrowBean ub = db.queryBorrowByID(brwID);
-            int stock = ub.getQuantity();
-            int eid = ub.getEquipment_id();
-            int currentStock = edb.queryQtyByID(eid);
-            ub.setStatus(userReq);
-            ub.setQuantity(currentStock + stock);
-            db.editRecord(ub);
-//            cdb.delRecord(brwID);  not yet
-            response.sendRedirect("CheckInOutController?action=viewCheckOut&limit=10");
-        } else if ("search".equalsIgnoreCase(action)) {
-            ArrayList<BorrowBean> records = null;
-            ArrayList<CheckInOutBean> dueTimeList = new ArrayList<CheckInOutBean>();
-            String searchtype = request.getParameter("searchtype");
-            if(request.getParameter("searchword").equalsIgnoreCase("")){
-                response.sendRedirect("CheckInOutController?action=viewCheckIn&limit=10");
-                return;
-            }
-            int searchword = Integer.parseInt(request.getParameter("searchword"));
-            String CheckInOrOut = request.getParameter("inOrOut");
-            String status = (CheckInOrOut.equalsIgnoreCase("Check-In")) ? "Accept" : "Check-In";
-
-            //get borrow by equip id or student id
-            if (searchtype.equals("eid")) {
-                records = db.queryBorrowByStatusAndEID(status, searchword);
-            } else if (searchtype.equals("sid")) {
-                records = db.queryBorrowByStatusAndSID(status, searchword);
-            }
-
-            String[] equName = new String[records.size()];
-            for (int i = 0; i < records.size(); i++) {
-                equName[i] = edb.queryEquipNameByID(records.get(i).getEquipment_id());
-                if (CheckInOrOut.equalsIgnoreCase("Check-Out")) {
-                    dueTimeList.add(cdb.queryCheckByID(records.get(i).getBorrow_id()));
-                    request.setAttribute("dueTimeList", dueTimeList);
+            if (!isAuthenticated(request) || !isAuthenticatedRole(request).equals("Technician") && !isAuthenticatedRole(request).equals("Senior Technician")) {
+                response.sendRedirect("/build/NoPermission.jsp");
+            } else {
+                ArrayList<BorrowBean> records = db.queryBorrowByStatus("Accept");
+                String[] equName = new String[records.size()];
+                for (int i = 0; i < records.size(); i++) {
+                    equName[i] = edb.queryEquipNameByID(records.get(i).getEquipment_id());
                 }
+                request.setAttribute("records", records);
+                request.setAttribute("equName", equName);
+                request.setAttribute("procLimit", limit);
+                request.setAttribute("inOrOut", "Check-In");
+                RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/checkInOut.jsp");
+                rd.forward(request, response);
             }
+        } else if ("viewCheckOut".equalsIgnoreCase(action)) {
+            if (!isAuthenticated(request) || !isAuthenticatedRole(request).equals("Technician") && !isAuthenticatedRole(request).equals("Senior Technician")) {
+                response.sendRedirect("/build/NoPermission.jsp");
+            } else {
+                ArrayList<BorrowBean> records = db.queryBorrowByStatus("Check-In");
+                String[] equName = new String[records.size()];
+                ArrayList<CheckInOutBean> dueTimeList = cdb.queryCheck();
+                for (int i = 0; i < records.size(); i++) {
+                    equName[i] = edb.queryEquipNameByID(records.get(i).getEquipment_id());
+                }
+                request.setAttribute("records", records);
+                request.setAttribute("equName", equName);
+                request.setAttribute("dueTimeList", dueTimeList);
+                request.setAttribute("procLimit", limit);
+                request.setAttribute("inOrOut", "Check-Out");
+                RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/checkInOut.jsp");
+                rd.forward(request, response);
+            }
+        } else if ("Check-In".equalsIgnoreCase(action)) {
+            if (!isAuthenticated(request) || !isAuthenticatedRole(request).equals("Technician") && !isAuthenticatedRole(request).equals("Senior Technician")) {
+                response.sendRedirect("/build/NoPermission.jsp");
+            } else {
+                String userReq = request.getParameter("request");
+                int brwID = Integer.parseInt(request.getParameter("id"));
+                BorrowBean ub = db.queryBorrowByID(brwID);
+                int stock = ub.getQuantity();
+                int eid = ub.getEquipment_id();
+                int currentStock = edb.queryQtyByID(eid);
+                ub.setStatus(userReq);
+                ub.setQuantity(currentStock - stock);
+                db.editRecord(ub);
+                cdb.addRecord(brwID, LocalDate.now(), LocalDate.now().plusDays(14));
+                response.sendRedirect("CheckInOutController?action=viewCheckIn&limit=10");
+            }
+        } else if ("Check-Out".equalsIgnoreCase(action)) {
+            if (!isAuthenticated(request) || !isAuthenticatedRole(request).equals("Technician") && !isAuthenticatedRole(request).equals("Senior Technician")) {
+                response.sendRedirect("/build/NoPermission.jsp");
+            } else {
+                String userReq = request.getParameter("request");
+                int brwID = Integer.parseInt(request.getParameter("id"));
+                BorrowBean ub = db.queryBorrowByID(brwID);
+                int stock = ub.getQuantity();
+                int eid = ub.getEquipment_id();
+                int currentStock = edb.queryQtyByID(eid);
+                ub.setStatus(userReq);
+                ub.setQuantity(currentStock + stock);
+                db.editRecord(ub);
+//            cdb.delRecord(brwID);  not yet
+                response.sendRedirect("CheckInOutController?action=viewCheckOut&limit=10");
+            }
+        } else if ("search".equalsIgnoreCase(action)) {
+            if (!isAuthenticated(request) || !isAuthenticatedRole(request).equals("Technician") && !isAuthenticatedRole(request).equals("Senior Technician")) {
+                response.sendRedirect("/build/NoPermission.jsp");
+            } else {
+                ArrayList<BorrowBean> records = null;
+                ArrayList<CheckInOutBean> dueTimeList = new ArrayList<CheckInOutBean>();
+                String searchtype = request.getParameter("searchtype");
+                if (request.getParameter("searchword").equalsIgnoreCase("")) {
+                    response.sendRedirect("CheckInOutController?action=viewCheckIn&limit=10");
+                    return;
+                }
+                int searchword = Integer.parseInt(request.getParameter("searchword"));
+                String CheckInOrOut = request.getParameter("inOrOut");
+                String status = (CheckInOrOut.equalsIgnoreCase("Check-In")) ? "Accept" : "Check-In";
 
-            request.setAttribute("records", records);
-            request.setAttribute("equName", equName);
-            request.setAttribute("procLimit", limit);
-            request.setAttribute("inOrOut", CheckInOrOut);
-            RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/checkInOut.jsp");
-            rd.forward(request, response);
+                //get borrow by equip id or student id
+                if (searchtype.equals("eid")) {
+                    records = db.queryBorrowByStatusAndEID(status, searchword);
+                } else if (searchtype.equals("sid")) {
+                    records = db.queryBorrowByStatusAndSID(status, searchword);
+                }
 
+                String[] equName = new String[records.size()];
+                for (int i = 0; i < records.size(); i++) {
+                    equName[i] = edb.queryEquipNameByID(records.get(i).getEquipment_id());
+                    if (CheckInOrOut.equalsIgnoreCase("Check-Out")) {
+                        dueTimeList.add(cdb.queryCheckByID(records.get(i).getBorrow_id()));
+                        request.setAttribute("dueTimeList", dueTimeList);
+                    }
+                }
+
+                request.setAttribute("records", records);
+                request.setAttribute("equName", equName);
+                request.setAttribute("procLimit", limit);
+                request.setAttribute("inOrOut", CheckInOrOut);
+                RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/checkInOut.jsp");
+                rd.forward(request, response);
+            }
         } else {
             PrintWriter out = response.getWriter();
             out.println("NO such action :" + action);
         }
+    }
+
+    private boolean isAuthenticated(HttpServletRequest request) {
+        boolean result = false;
+        HttpSession session = request.getSession();
+        if (session.getAttribute("userId") != null) {
+            result = true;
+        }
+        return result;
+    }
+
+    private String isAuthenticatedRole(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        UserBean bean = (UserBean) session.getAttribute("userId");
+        return bean.getRole();
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

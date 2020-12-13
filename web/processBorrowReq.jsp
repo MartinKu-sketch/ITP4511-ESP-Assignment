@@ -1,3 +1,4 @@
+<%@page import="ict.bean.UserBean"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="ict.bean.BorrowBean"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -12,7 +13,7 @@
         <link rel="preconnect" href="https://fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"> 
         <style type="text/css">
-           /*table*/
+            /*table*/
             #usertable-container {
                 /*height: 300px;*/
                 margin-bottom: 20px;
@@ -118,12 +119,20 @@
     </head>​
     <body>​
         <jsp:useBean id="records" scope="request" class="java.util.ArrayList<ict.bean.BorrowBean>"/>
-        <%String procLimit = (String) request.getAttribute("procLimit");%>
-        <%String[] equName = (String[]) request.getAttribute("equName");%>
+        <%
+            String procLimit = (String) request.getAttribute("procLimit");
+            String[] equName = (String[]) request.getAttribute("equName");
+            String limit = (String) request.getAttribute("limit");
+            String menu = "techMenu.jsp";
+            session = request.getSession();
+            UserBean bean = (UserBean) session.getAttribute("userId");
+            if (bean.getRole().equals("Senior Technician"))
+                menu = "stechMenu.jsp";
+        %>
 
         <div id="maincontainer">​
             <div id="leftcolumn">​
-                <jsp:include page="techMenu.jsp" />​
+                 <jsp:include page="<%=menu%>" />​
             </div>​
             <div id="contentwrapper">​
                 <div id="contentcolumn">​
@@ -163,7 +172,7 @@
             var r = confirm(txt + " request of " + text + " ?");
             console.log(txt + " : " + id);
             if (r == true) {
-                window.location.href = "BorrowController?action=procRequest&request=" + txt + "&id=" + id +"&limit="+DEFAULT_LIMIT;
+                window.location.href = "BorrowController?action=procRequest&request=" + txt + "&id=" + id + "&limit=" + DEFAULT_LIMIT;
             } else {
                 return;
             }

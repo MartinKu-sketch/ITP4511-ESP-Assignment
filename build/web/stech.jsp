@@ -1,5 +1,13 @@
+<%@page import="ict.bean.UserBean"%>
+<%@page import="ict.db.UserDB"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>​
 <!DOCTYPE html>​
+<%!
+    String dbUser = "root";
+    String dbPassword = "root";
+    String dbUrl = "jdbc:mysql://localhost:3306/ITP4511_DB?useSSL=false";
+    UserDB udb = new UserDB(dbUrl, dbUser, dbPassword);
+%>
 <html>
     <head> ​
         <title>Profile</title>
@@ -20,6 +28,12 @@
         </style>
     </head>​
     <body>​
+        <%
+            session = request.getSession();
+            UserBean bean = (UserBean) session.getAttribute("userId");
+            UserBean user = udb.queryUserByID(bean.getUserId());
+            String username = user.getName();
+        %>
         <div id="maincontainer">​
             <div id="leftcolumn">​
                 <jsp:include page="stechMenu.jsp" />​
@@ -27,7 +41,7 @@
             <div id="contentwrapper">​
                 <div id="contentcolumn">​
                     <div class="innertube">
-                        <h1>Welcome! Senior Tech</h1>
+                        <h1>Welcome! <%=username%></h1>
                     </div>
                 </div>​
             </div>​

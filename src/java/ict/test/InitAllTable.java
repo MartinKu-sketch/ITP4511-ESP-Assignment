@@ -61,7 +61,7 @@ public class InitAllTable {
         bo.addRecord(8, "7", 4, "Check-In");
         bo.addRecord(6, "7", 6, "Check-In");
         //ready to accept request
-        bo.addRecord(7, "4", 2, "Pending");
+        bo.addRecord(7, "4", 100, "Pending");
         bo.addRecord(8, "4", 2, "Pending");
         bo.addRecord(9, "7", 1, "Pending");
         

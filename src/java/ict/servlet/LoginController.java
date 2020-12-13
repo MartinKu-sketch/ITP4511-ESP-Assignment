@@ -6,8 +6,10 @@
 package ict.servlet;
 
 import ict.bean.UserBean;
+import ict.bean.WaitingBorrowListBean;
 import ict.db.UserDB;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -29,7 +31,7 @@ public class LoginController extends HttpServlet {
     public void init() {
         String dbUser = this.getServletContext().getInitParameter("dbUser");
         String dbPassword = this.getServletContext().getInitParameter("dbPassword");
-        String dbUrl = this.getServletContext().getInitParameter("dbUrl");        
+        String dbUrl = this.getServletContext().getInitParameter("dbUrl");
         db = new UserDB(dbUrl, dbUser, dbPassword);
     }
 
@@ -56,27 +58,43 @@ public class LoginController extends HttpServlet {
     }
 
     private void doAuthenticate(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String userId = request.getParameter("id");
-        String password = request.getParameter("pw");
-        String role = db.isValidUser(userId, password);
+        String role;
+        String userId;
+        if (isAuthenticated(request)) {
+            HttpSession session = request.getSession();
+            UserBean bean = new UserBean();
+            bean = (UserBean) session.getAttribute("userId");
+            userId = bean.getUserId();
+            role = bean.getRole();
+        } else {
+            userId = request.getParameter("id");
+            String password = request.getParameter("pw");
+            role = db.isValidUser(userId, password);
+        }
         String targetURL;
 
-        if (role.equals("Student")){
+        if (role.equals("Student")) {
             HttpSession session = request.getSession(true);
             UserBean bean = new UserBean();
+            WaitingBorrowListBean wblb = new WaitingBorrowListBean();
+            wblb.setArraylist(new ArrayList<>());
             bean.setUserId(userId);
+            bean.setRole("Student");
             session.setAttribute("userId", bean);
+            session.setAttribute("wblb", wblb);
             targetURL = "student.jsp";
-        } else if(role.equals("Technician")){
+        } else if (role.equals("Technician")) {
             HttpSession session = request.getSession(true);
             UserBean bean = new UserBean();
             bean.setUserId(userId);
+            bean.setRole("Technician");
             session.setAttribute("userId", bean);
             targetURL = "tech.jsp";
-        } else if(role.equals("Senior Technician")){
+        } else if (role.equals("Senior Technician")) {
             HttpSession session = request.getSession(true);
             UserBean bean = new UserBean();
             bean.setUserId(userId);
+            bean.setRole("Senior Technician");
             session.setAttribute("userId", bean);
             targetURL = "stech.jsp";
         } else {
@@ -97,7 +115,7 @@ public class LoginController extends HttpServlet {
     }
 
     private void doLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String targetURL = "login.jsp";
+        String targetURL = "index.jsp";
         RequestDispatcher rd;
         rd = getServletContext().getRequestDispatcher("/" + targetURL);
         rd.forward(request, response);
@@ -107,6 +125,7 @@ public class LoginController extends HttpServlet {
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.removeAttribute("userId");
+            session.removeAttribute("wblb");
             session.invalidate();
         }
         doLogin(request, response);

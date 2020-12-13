@@ -1,3 +1,4 @@
+<%@page import="ict.bean.UserBean"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="ict.bean.BorrowBean"%>
 <%@page import="ict.bean.CheckInOutBean"%>
@@ -149,13 +150,16 @@
             String[] equName = (String[]) request.getAttribute("equName");
             ArrayList<CheckInOutBean> dueTimeList = (ArrayList<CheckInOutBean>) request.getAttribute("dueTimeList");
             String role = (String) request.getAttribute("role");
-            String leftcolumn = (role.equalsIgnoreCase("tech")) ? "techMenu.jsp" : "stechMenu.jsp";
-            
+            String menu = "techMenu.jsp";
+            session = request.getSession();
+            UserBean bean = (UserBean)session.getAttribute("userId");
+            if(bean.getRole().equals("Senior Technician"))
+                menu = "stechMenu.jsp";
         %>
 
         <div id="maincontainer">​
             <div id="leftcolumn">​
-                <jsp:include page="<%=leftcolumn%>" />​
+                <jsp:include page="<%=menu%>" />​
             </div>​
             <div id="contentwrapper">​
                 <div id="contentcolumn">​

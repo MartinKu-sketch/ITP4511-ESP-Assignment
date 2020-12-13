@@ -1,3 +1,4 @@
+<%@page import="ict.bean.WaitingBorrowListBean"%>
 <%@page import="ict.bean.WaitingBorrowBean"%>
 <%@page import="ict.bean.BorrowBean"%>
 <%@page import="ict.bean.EquipmentBean"%>
@@ -13,7 +14,7 @@
         <link rel="stylesheet" href="css/mystyles.css" type="text/css"/>
         <link rel="preconnect" href="https://fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-        <style type="text/css">            
+        <style type="text/css">          
             fieldset {
                 padding: 1em;
             }
@@ -26,8 +27,7 @@
             }
 
             #usertable-container {
-                height: 350px;
-                overflow-x: scroll;
+                height: auto;
             }
 
             td a {
@@ -120,15 +120,20 @@
                                 <th>Name</th>
                                 <th>Quantity</th>
                             </tr>
-                            <jsp:useBean id="waitingborrowlist" scope="request" class="ict.bean.WaitingBorrowListBean"/>
                             <%
-                                for (int i = 0; i < waitingborrowlist.getArraylist().size(); i++) {
-                                    WaitingBorrowBean wbb = waitingborrowlist.getArraylist().get(i);
-                                    out.println("<tr>"
-                                            + "<td>" + wbb.getEquipment_id() + "</td>"
-                                            + "<td>" + wbb.getEquipment_name() + "</td>"
-                                            + "<td>" + wbb.getQuantity() + "</td>"
-                                            + "</tr>");
+                                session = request.getSession(true);
+                                try {
+                                    WaitingBorrowListBean waitingborrowlist = (WaitingBorrowListBean) session.getAttribute("wblb");
+                                    for (int i = 0; i < waitingborrowlist.getArraylist().size(); i++) {
+                                        WaitingBorrowBean wbb = waitingborrowlist.getArraylist().get(i);
+                                        out.println("<tr>"
+                                                + "<td>" + wbb.getEquipment_id() + "</td>"
+                                                + "<td>" + wbb.getEquipment_name() + "</td>"
+                                                + "<td>" + wbb.getQuantity() + "</td>"
+                                                + "</tr>");
+                                    }
+                                } catch (Exception ex) {
+
                                 }
                             %>
                         </table>
